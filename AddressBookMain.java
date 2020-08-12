@@ -6,28 +6,33 @@ import java.util.Scanner;
 public class AddressBookMain {
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Enter your choice: \n 1=addContact \n 2=editContact");
+        System.out.println("Enter your choice: \n 1=addContact \n 2=editContact \n 3=deleteContact \n 4=checkContact");
         final int input = scan.nextInt();
         final AddressBook addressBook = new AddressBookImpl();
         switch (input) {
-            case 1 :
+            case 1:
                 final ContactPerson contactPerson = AddressBookImpl.buildContactPerson();
                 addressBook.addContactPerson(contactPerson);
                 break;
-            case 2 :
+            case 2:
                 System.out.println("Enter user name: ");
                 final String userName = scan.next();
                 final ContactPerson existingContactPerson = addressBook.getContactPersonByName(userName);
-                if(existingContactPerson == null) {
+                if (existingContactPerson == null) {
                     System.out.println("Contact does not exist.");
                 } else {
                     addressBook.editContactPerson(existingContactPerson, userName);
                 }
                 break;
-            case 3 :
+            case 3:
                 System.out.println("Enter user name: ");
                 final String keyValue = scan.next();
                 addressBook.deleteContactPerson(keyValue);
+                break;
+            case 4:
+                System.out.println("Enter user name: ");
+                final String name = scan.next();
+                addressBook.duplicateContactPerson(name);
                 break;
             default:
                 System.out.println("Invalid Input. Choose from option given");
@@ -41,6 +46,7 @@ interface AddressBook {
     void addContactPerson(final ContactPerson contactPerson);
     void editContactPerson(final ContactPerson contactPerson, final String userName);
     void deleteContactPerson(final String keyValue);
+    ContactPerson duplicateContactPerson(String name);
     ContactPerson getContactPersonByName(final String name);
 }
 
@@ -130,6 +136,18 @@ class AddressBookImpl implements AddressBook {
         } else {
             System.out.println("Contact does not exist.");
         }
+    }
+
+    /**
+     * Method to check for duplicate value using Java Streams
+     * @param name
+     * @return duplicateContact
+     */
+    @Override
+    public ContactPerson duplicateContactPerson(String name) {
+        boolean testIfDuplicate = contactPersonMap.keySet().stream().noneMatch(string -> string.equals(name));
+        ContactPerson duplicateContact = testIfDuplicate == false ? contactPersonMap.get(name) : null;
+        return  duplicateContact;
     }
 
 }
