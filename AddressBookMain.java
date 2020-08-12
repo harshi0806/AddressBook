@@ -8,14 +8,19 @@ public class AddressBookMain {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter your choice: \n 1=addContact \n 2=editContact");
         final int input = scan.nextInt();
+        AddressBook addressBook = new AddressBookImpl();
         switch (input) {
             case 1 :
-                final ContactPerson contactPerson = AddressBookImpl.buildContactPerson();
-                final AddressBook addressBook = new AddressBookImpl();
+                ContactPerson contactPerson = AddressBookImpl.buildContactPerson();
+                addressBook = new AddressBookImpl();
                 addressBook.addContactPerson(contactPerson);
                 break;
             case 2 :
-                System.out.println("Enter field");
+                System.out.println("Enter user name: ");
+                String userName = scan.next();
+                contactPerson = AddressBookImpl.editContactDetail(addressBook.getContactPersonByName(userName));
+                addressBook = new AddressBookImpl();
+                addressBook.editContactPerson(contactPerson);
                 break;
             default:
                 System.out.println("Invalid Input. Choose from option given");
@@ -48,7 +53,6 @@ class AddressBookImpl implements AddressBook {
     public void editContactPerson(final ContactPerson contactPerson) {
         contactPersonMap.put(contactPerson.getName(), contactPerson);
         System.out.println(contactPersonMap);
-
     }
 
     @Override
@@ -75,6 +79,40 @@ class AddressBookImpl implements AddressBook {
         int phoneNumber = scan.nextInt();
         String name = firstName + " " + lastName;
         return new ContactPerson(name, firstName, lastName, address, city, state, zip, phoneNumber);
+    }
+
+    public static ContactPerson editContactDetail(ContactPerson contactPerson) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Enter field: \n 1=address \n 2=city \n 3=state \n 4=zip \n 5=phone number");
+        int input = scan.nextInt();
+        switch (input) {
+            case 1 :
+                System.out.println("New address: ");
+                scan.nextLine();
+                String newAddress = scan.nextLine();
+                contactPerson.setAddress(newAddress);
+                break;
+            case 2 :
+                System.out.println("New city: ");
+                String newCity = scan.next();
+                contactPerson.setCity(newCity);
+                break;
+            case 3 :
+                System.out.println("New state: ");
+                String newState = scan.next();
+                contactPerson.setState(newState);
+            case 4 :
+                System.out.println("New zip: ");
+                int newZip = scan.nextInt();
+                contactPerson.setZip(newZip);
+            case 5 :
+                System.out.println("New phone number: ");
+                int newPhoneNumber = scan.nextInt();
+                contactPerson.setPhoneNumber(newPhoneNumber);
+            default:
+                System.out.println("Invalid option");
+        }
+        return contactPerson;
     }
 }
 
@@ -111,7 +149,6 @@ class ContactPerson {
 
     /**
      * Getter and Setter methods
-     *
      * @return Corresponding value of variables
      */
     public String getName() {
