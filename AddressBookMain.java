@@ -62,6 +62,10 @@ class AddressBookImpl implements AddressBook {
         return contactPersonMap.get(name);
     }
 
+    /**
+     * This method is used to add multiple contact
+     * @return the new contact value added
+     */
     public static ContactPerson buildContactPerson() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter first name: ");
