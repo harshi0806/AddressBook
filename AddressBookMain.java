@@ -49,6 +49,9 @@ interface AddressBook {
     void deleteContactPerson(final String keyValue);
     ContactPerson duplicateContactPerson(String name);
     void sortAlphabetically(Map<String, ContactPerson> contactPersonMap);
+    void sortByCity(Map<String, ContactPerson> contactPersonMap);
+    void sortByState(Map<String, ContactPerson> contactPersonMap);
+    void sortByZip(Map<String, ContactPerson> addressBook)
     ContactPerson getContactPersonByName(final String name);
 }
 
@@ -153,7 +156,7 @@ class AddressBookImpl implements AddressBook {
     }
     /**
      * Using Java Stream to Sort the Address Book Alphabetically
-     * @param addressBook
+     * @param contactPersonMap
      */
     @Override
     public void sortAlphabetically(Map<String, ContactPerson> contactPersonMap) {
@@ -162,11 +165,66 @@ class AddressBookImpl implements AddressBook {
                 .sorted(Map.Entry.<String, ContactPerson>comparingByKey())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, HashMap::new));contactsSortedAlphabetically.forEach((name, contactPerson) -> {
             System.out.println();
-            System.out.print(fullName);
-            System.out.print(people);
+            System.out.print(name);
+            System.out.print(contactPerson);
             System.out.println();
         });
     }
+    /**
+     * Using Java Streams to Sort the Address Book by City, State & Zip
+     * @param contactPersonMap
+     */
+    @Override
+    public void sortByCity(Map<String, ContactPerson> contactPersonMap) {
+        Map<String, ContactPerson> contactsSortedByCity = contactPersonMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, ContactPerson>comparingByValue(Comparator.comparing(ContactPerson::getCity)))
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        HashMap::new));
+        contactsSortedByCity.forEach((name, contactPerson) -> {
+            System.out.println();
+            System.out.print(name);
+            System.out.print(contactPerson);
+            System.out.println();
+        });
+    }
+
+    @Override
+    public void sortByState(Map<String, ContactPerson> contactPersonMap) {
+        Map<String, ContactPerson> contactsSortedByState = contactPersonMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, ContactPerson>comparingByValue(Comparator.comparing(ContactPerson::getState)))
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        HashMap::new));
+        contactsSortedByState.forEach((name, contactPerson) -> {
+            System.out.println();
+            System.out.print(name);
+            System.out.print(contactPerson);
+            System.out.println();
+        });
+    }
+
+    @Override
+    public void sortByZip(Map<String, ContactPerson> addressBook) {
+        Map<String, ContactPerson> contactsSortedByZip = contactPersonMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, ContactPerson>comparingByValue(Comparator.comparing(ContactPerson::getZip)))
+                .collect(Collectors.toMap(Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (e1, e2) -> e1,
+                        HashMap::new));
+        contactsSortedByZip.forEach((name, contactPerson) -> {
+            System.out.println();
+            System.out.print(name);
+            System.out.print(contactPerson);
+            System.out.println();
+        });
+    }
+}
 
 }
 
