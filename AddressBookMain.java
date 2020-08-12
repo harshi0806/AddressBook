@@ -2,6 +2,7 @@ package com.adressbook;
 
 import java.util.*;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class AddressBookMain {
     public static void main(String[] args) {
@@ -47,6 +48,7 @@ interface AddressBook {
     void editContactPerson(final ContactPerson contactPerson, final String userName);
     void deleteContactPerson(final String keyValue);
     ContactPerson duplicateContactPerson(String name);
+    void sortAlphabetically(Map<String, ContactPerson> contactPersonMap);
     ContactPerson getContactPersonByName(final String name);
 }
 
@@ -148,6 +150,22 @@ class AddressBookImpl implements AddressBook {
         boolean testIfDuplicate = contactPersonMap.keySet().stream().noneMatch(string -> string.equals(name));
         ContactPerson duplicateContact = testIfDuplicate == false ? contactPersonMap.get(name) : null;
         return  duplicateContact;
+    }
+    /**
+     * Using Java Stream to Sort the Address Book Alphabetically
+     * @param addressBook
+     */
+    @Override
+    public void sortAlphabetically(Map<String, ContactPerson> contactPersonMap) {
+        Map<String, ContactPerson> contactsSortedAlphabetically = contactPersonMap.entrySet()
+                .stream()
+                .sorted(Map.Entry.<String, ContactPerson>comparingByKey())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, HashMap::new));contactsSortedAlphabetically.forEach((name, contactPerson) -> {
+            System.out.println();
+            System.out.print(fullName);
+            System.out.print(people);
+            System.out.println();
+        });
     }
 
 }
