@@ -8,19 +8,26 @@ public class AddressBookMain {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter your choice: \n 1=addContact \n 2=editContact");
         final int input = scan.nextInt();
-        AddressBook addressBook = new AddressBookImpl();
+        final AddressBook addressBook = new AddressBookImpl();
         switch (input) {
             case 1 :
-                ContactPerson contactPerson = AddressBookImpl.buildContactPerson();
-                addressBook = new AddressBookImpl();
+                final ContactPerson contactPerson = AddressBookImpl.buildContactPerson();
                 addressBook.addContactPerson(contactPerson);
                 break;
             case 2 :
                 System.out.println("Enter user name: ");
-                String userName = scan.next();
-                contactPerson = AddressBookImpl.editContactDetail(addressBook.getContactPersonByName(userName));
-                addressBook = new AddressBookImpl();
-                addressBook.editContactPerson(contactPerson);
+                final String userName = scan.next();
+                final ContactPerson existingContactPerson = addressBook.getContactPersonByName(userName);
+                if(existingContactPerson == null) {
+                    System.out.println("Contact does not exist.");
+                } else {
+                    addressBook.editContactPerson(existingContactPerson, userName);
+                }
+                break;
+            case 3 :
+                System.out.println("Enter user name: ");
+                final String keyValue = scan.next();
+                addressBook.deleteContactPerson(keyValue);
                 break;
             default:
                 System.out.println("Invalid Input. Choose from option given");
@@ -32,7 +39,8 @@ public class AddressBookMain {
  */
 interface AddressBook {
     void addContactPerson(final ContactPerson contactPerson);
-    void editContactPerson(final ContactPerson contactPerson);
+    void editContactPerson(final ContactPerson contactPerson, final String userName);
+    void deleteContactPerson(final String keyValue);
     ContactPerson getContactPersonByName(final String name);
 }
 
@@ -45,12 +53,6 @@ class AddressBookImpl implements AddressBook {
 
     @Override
     public void addContactPerson(final ContactPerson contactPerson) {
-        contactPersonMap.put(contactPerson.getName(), contactPerson);
-        System.out.println(contactPersonMap);
-    }
-
-    @Override
-    public void editContactPerson(final ContactPerson contactPerson) {
         contactPersonMap.put(contactPerson.getName(), contactPerson);
         System.out.println(contactPersonMap);
     }
@@ -80,40 +82,52 @@ class AddressBookImpl implements AddressBook {
         String name = firstName + " " + lastName;
         return new ContactPerson(name, firstName, lastName, address, city, state, zip, phoneNumber);
     }
-
-    public static ContactPerson editContactDetail(ContactPerson contactPerson) {
+    @Override
+    public void editContactPerson(final ContactPerson contactPerson, final String userName) {
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter field: \n 1=address \n 2=city \n 3=state \n 4=zip \n 5=phone number");
-        int input = scan.nextInt();
+        final int input = scan.nextInt();
         switch (input) {
-            case 1 :
+            case 1:
                 System.out.println("New address: ");
                 scan.nextLine();
                 String newAddress = scan.nextLine();
                 contactPerson.setAddress(newAddress);
                 break;
-            case 2 :
+            case 2:
                 System.out.println("New city: ");
                 String newCity = scan.next();
                 contactPerson.setCity(newCity);
                 break;
-            case 3 :
+            case 3:
                 System.out.println("New state: ");
                 String newState = scan.next();
                 contactPerson.setState(newState);
-            case 4 :
+            case 4:
                 System.out.println("New zip: ");
                 int newZip = scan.nextInt();
                 contactPerson.setZip(newZip);
-            case 5 :
+            case 5:
                 System.out.println("New phone number: ");
                 int newPhoneNumber = scan.nextInt();
                 contactPerson.setPhoneNumber(newPhoneNumber);
             default:
                 System.out.println("Invalid option");
         }
-        return contactPerson;
+        contactPersonMap.put(userName, contactPerson);
     }
+
+    @Override
+    public void deleteContactPerson(final String keyValue) {
+        boolean checkIfExist = contactPersonMap.containsKey(keyValue);
+        if(checkIfExist == true) {
+            contactPersonMap.remove(keyValue);
+            System.out.println(contactPersonMap.get(keyValue));
+        } else {
+            System.out.println("Contact does not exist.");
+        }
+    }
+
 }
 
 
