@@ -249,6 +249,25 @@ class AddressBookImpl implements AddressBook {
                         HashMap::new));
         return stateDictionary;
     }
+
+    /**
+     * Using Java Stream searching Contacts by City & State
+     * @param contactPersonMap
+     * @param city, state
+     */
+    public void searchByCity(Map<String, ContactPerson> contactPersonMap, String city) {
+        contactPersonMap.values()
+                .stream()
+                .filter(tempContact -> tempContact.getCity().equals(city))
+                .forEach(System.out::println);
+    }
+
+    public void searchByState(Map<String, ContactPerson> contactPersonMap, String state) {
+        contactPersonMap.values()
+                .stream()
+                .filter(tempContact -> tempContact.getState().equals(state))
+                .forEach(System.out::println);
+    }
 }
 
 /**
