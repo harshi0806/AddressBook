@@ -3,6 +3,7 @@ package com.adressbook;
 import java.util.*;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.util.function.Function;
 
 public class AddressBookMain {
     public static void main(String[] args) {
@@ -224,10 +225,31 @@ class AddressBookImpl implements AddressBook {
             System.out.println();
         });
     }
-}
+    /**
+     * Using Java Stream to Create City & State Dictionaries
+     * @param contactPersonMap
+     * @return cityDictionary
+     */
+    public Map<String, ContactPerson> buildCityDictionary (Map<String, ContactPerson> contactPersonMap) {
+        Map<String, ContactPerson> cityDictionary = contactPersonMap.values()
+                .stream()
+                .collect(Collectors.toMap(ContactPerson::getCity,
+                        Function.identity(),
+                        (e1, e2) -> e1,
+                        HashMap::new));
+        return cityDictionary;
+    }
 
+    public Map<String, ContactPerson> buildStateDictionary (Map<String, ContactPerson> contactPersonMap) {
+        Map<String, ContactPerson> stateDictionary = contactPersonMap.values()
+                .stream()
+                .collect(Collectors.toMap(ContactPerson::getState,
+                        Function.identity(),
+                        (e1, e2) -> e1,
+                        HashMap::new));
+        return stateDictionary;
+    }
 }
-
 
 /**
  * Another class ContactPerson which contains details of person
